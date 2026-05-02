@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Workout Planner</title>
+    <meta name="theme-color" content="#f7f3ea">
+    <meta name="color-scheme" content="light">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Workouts">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="app">
+
+    <!-- =========== SETUP VIEW =========== -->
+    <section id="setupView" class="view" hidden>
+        <header class="hero">
+            <h1>Workout Planner</h1>
+            <p class="hero-sub">Generate a paired interval workout from your equipment.</p>
+        </header>
+
+        <form id="setupForm" class="form" novalidate>
+            <div class="field">
+                <label>Available equipment</label>
+                <p class="field-hint">Tap to toggle what you've got on hand.</p>
+                <div id="equipmentList" class="pills" role="group" aria-label="Equipment"></div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="dumbbellCount">Dumbbells</label>
+                    <div class="stepper" data-stepper="dumbbellCount">
+                        <button type="button" class="step-btn" data-step="-1" aria-label="Decrease dumbbells">−</button>
+                        <input id="dumbbellCount" name="dumbbellCount" type="number" inputmode="numeric" min="0" max="2" value="0" readonly>
+                        <button type="button" class="step-btn" data-step="1" aria-label="Increase dumbbells">+</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="kettlebellCount">Kettlebells</label>
+                    <div class="stepper" data-stepper="kettlebellCount">
+                        <button type="button" class="step-btn" data-step="-1" aria-label="Decrease kettlebells">−</button>
+                        <input id="kettlebellCount" name="kettlebellCount" type="number" inputmode="numeric" min="0" max="2" value="0" readonly>
+                        <button type="button" class="step-btn" data-step="1" aria-label="Increase kettlebells">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <details id="advancedOptions" class="advanced">
+                <summary id="advancedSummary">Advanced options</summary>
+                <div class="advanced-body">
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="totalMinutes">Total minutes</label>
+                            <div class="stepper" data-stepper="totalMinutes">
+                                <button type="button" class="step-btn" data-step="-1" aria-label="Decrease total minutes">−</button>
+                                <input id="totalMinutes" name="totalMinutes" type="number" inputmode="numeric" value="24" readonly>
+                                <button type="button" class="step-btn" data-step="1" aria-label="Increase total minutes">+</button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="blockMinutes">Block minutes</label>
+                            <div class="stepper" data-stepper="blockMinutes">
+                                <button type="button" class="step-btn" data-step="-1" aria-label="Decrease block minutes">−</button>
+                                <input id="blockMinutes" name="blockMinutes" type="number" inputmode="numeric" value="8" readonly>
+                                <button type="button" class="step-btn" data-step="1" aria-label="Increase block minutes">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="workSeconds">Work seconds</label>
+                            <div class="stepper" data-stepper="workSeconds">
+                                <button type="button" class="step-btn" data-step="-1" aria-label="Decrease work seconds">−</button>
+                                <input id="workSeconds" name="workSeconds" type="number" inputmode="numeric" value="40" readonly>
+                                <button type="button" class="step-btn" data-step="1" aria-label="Increase work seconds">+</button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="restSeconds">Rest seconds</label>
+                            <div class="stepper" data-stepper="restSeconds">
+                                <button type="button" class="step-btn" data-step="-1" aria-label="Decrease rest seconds">−</button>
+                                <input id="restSeconds" name="restSeconds" type="number" inputmode="numeric" value="20" readonly>
+                                <button type="button" class="step-btn" data-step="1" aria-label="Increase rest seconds">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <div id="setupError" class="error-banner" hidden></div>
+
+            <button id="generateBtn" type="submit" class="btn btn-primary btn-block">Generate workout</button>
+        </form>
+    </section>
+
+    <!-- =========== PLAN VIEW =========== -->
+    <section id="planView" class="view" hidden>
+        <header class="plan-header">
+            <button id="editSetupBtn" type="button" class="btn-link" aria-label="Edit setup">‹ Edit</button>
+            <h2 class="plan-title">Your workout</h2>
+            <button id="savePlanBtn" type="button" class="btn-link" aria-label="Save workout">Save</button>
+        </header>
+
+        <p id="planSummary" class="plan-summary"></p>
+        <div id="savedFlash" class="saved-flash" hidden>Saved.</div>
+
+        <ol id="blockList" class="block-list"></ol>
+
+        <div class="plan-actions">
+            <button id="regenerateBtn" type="button" class="btn btn-ghost">Regenerate</button>
+            <button id="newPlanBtn" type="button" class="btn btn-ghost">New plan</button>
+        </div>
+    </section>
+
+</main>
+
+<script src="exercises.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
