@@ -220,6 +220,8 @@ function makeBlock(index, picks, slots, settings) {
         index,
         title: `Block ${index} · ${settings.blockMinutes} min`,
         durationMinutes: settings.blockMinutes,
+        workSeconds: settings.workSeconds,
+        restSeconds: settings.restSeconds,
         exercises: [exA, exB],
         minutes,
     };
@@ -404,20 +406,15 @@ function renderBlockCard(block) {
         .map(ex => `<span class="tag tag-${escapeHtml(ex.focus)}">${escapeHtml(FOCUS_LABELS[ex.focus] || ex.focus)}</span>`)
         .join('');
 
-    const minutesHtml = block.minutes.map(m => `
-        <li class="minute-row${m.slot === 'B' ? ' is-b' : ''}">
-            <span class="minute-num">${m.minute}.</span>
-            <span class="minute-name">${escapeHtml(m.exercise.name)}</span>
-            <span class="minute-timing">${m.workSeconds}s / ${m.restSeconds}s</span>
-        </li>
-    `).join('');
+    const reps = block.durationMinutes / 2;
+    const cadence = `Alternate each minute · ${reps}× each · ${block.workSeconds}s work / ${block.restSeconds}s rest`;
 
     return `
         <li class="block-card">
             <div class="block-head">${escapeHtml(block.title)}</div>
             <p class="block-pair">${escapeHtml(pairText)}</p>
             <div class="block-tags">${tags}</div>
-            <ol class="block-minutes">${minutesHtml}</ol>
+            <p class="block-cadence">${escapeHtml(cadence)}</p>
         </li>
     `;
 }
